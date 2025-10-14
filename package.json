@@ -1,0 +1,22 @@
+{
+  "name": "manseryeok-saju",
+  "version": "1.0.0",
+  "description": "만세력 기반 사주 조회 시스템",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "manseryeok",
+    "saju",
+    "bazi",
+    "fortune"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2"
+  }
+}
