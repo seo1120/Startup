@@ -1,22 +1,27 @@
 {
-  "name": "manseryeok-saju",
+  "name": "five-flows",
   "version": "1.0.0",
-  "description": "만세력 기반 사주 조회 시스템",
+  "description": "Traditional Saju analysis based on the Five Elements",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "keywords": [
-    "manseryeok",
+    "five-flows",
     "saju",
     "bazi",
-    "fortune"
+    "four-pillars",
+    "five-elements"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.12.2",
     "better-sqlite3": "^11.8.1",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "geo-tz": "^8.1.4",
+    "moment-timezone": "^0.6.0",
+    "node-geocoder": "^4.4.1"
   }
 }
