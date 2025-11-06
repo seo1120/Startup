@@ -11,7 +11,16 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static(__dirname));
+
+// 정적 파일 서빙 (로컬 개발용)
+if (require.main === module) {
+    app.use(express.static(__dirname));
+}
+
+// 루트 경로 처리 (Vercel용)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // 시주 천간 계산 함수
 function getHourStem(dayStem, hourBranch) {
