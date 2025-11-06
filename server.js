@@ -139,6 +139,7 @@ app.post('/api/geocode', async (req, res) => {
 
 // 만세력 조회 API
 app.post('/api/manseryeok', (req, res) => {
+    let db;
     try {
         const { year, month, day, hour, minute, gender, timezone, birthplace } = req.body;
         
@@ -165,7 +166,27 @@ app.post('/api/manseryeok', (req, res) => {
         console.log('원본 시간:', localTimeString, timezone);
         console.log('변환된 한국 시간:', kstMoment.format('YYYY-MM-DD HH:mm'));
         
-        const db = new Database('manseryuk.db', { readonly: true });
+        // Vercel 환경에서 데이터베이스 파일 경로 처리
+        const dbPath = path.join(__dirname, 'manseryuk.db');
+        console.log('Database path:', dbPath);
+        console.log('__dirname:', __dirname);
+        console.log('Current working directory:', process.cwd());
+        
+        try {
+            db = new Database(dbPath, { readonly: true });
+            console.log('Database connected successfully');
+        } catch (dbError) {
+            console.error('Database connection error:', dbError);
+            console.error('Error details:', {
+                message: dbError.message,
+                code: dbError.code,
+                errno: dbError.errno
+            });
+            return res.status(500).json({ 
+                error: '데이터베이스 연결 오류가 발생했습니다.', 
+                details: process.env.NODE_ENV === 'production' ? 'Database connection failed' : dbError.message 
+            });
+        }
         
         // 날짜로 만세력 조회 (변환된 한국 시간 기준)
         const query = `
@@ -173,7 +194,17 @@ app.post('/api/manseryeok', (req, res) => {
             WHERE cd_sy = ? AND cd_sm = ? AND cd_sd = ?
         `;
         
-        const result = db.prepare(query).get(adjustedYear, adjustedMonth.toString(), adjustedDay.toString());
+        let result;
+        try {
+            result = db.prepare(query).get(adjustedYear, adjustedMonth.toString(), adjustedDay.toString());
+        } catch (queryError) {
+            console.error('Query error:', queryError);
+            db.close();
+            return res.status(500).json({ 
+                error: '데이터베이스 쿼리 오류가 발생했습니다.', 
+                details: queryError.message 
+            });
+        }
         
         if (!result) {
             db.close();
@@ -242,7 +273,12 @@ app.post('/api/manseryeok', (req, res) => {
         
         const fiveElements = analyzeFiveElements(pillars);
         
-        db.close();
+        // 데이터베이스 닫기
+        try {
+            db.close();
+        } catch (closeError) {
+            console.error('Database close error:', closeError);
+        }
         
         res.json({
             success: true,
@@ -316,7 +352,21 @@ app.post('/api/manseryeok', (req, res) => {
         
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: '서버 오류가 발생했습니다.', details: error.message });
+        console.error('Error stack:', error.stack);
+        
+        // 데이터베이스가 열려있으면 닫기
+        if (typeof db !== 'undefined' && db) {
+            try {
+                db.close();
+            } catch (closeError) {
+                console.error('Database close error in catch:', closeError);
+            }
+        }
+        
+        res.status(500).json({ 
+            error: '서버 오류가 발생했습니다.', 
+            details: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message 
+        });
     }
 });
 
