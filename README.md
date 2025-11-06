@@ -1,5 +1,6 @@
-# 🌿 Ohang Project
-> AI-based wellness app inspired by the Five Elements.
+# Five Flows
+> Traditional Saju analysis based on the Five Elements for wellness and balance.
+
 
 ## 👥 Team Members
 
