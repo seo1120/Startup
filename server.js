@@ -465,7 +465,13 @@ Based on the Saju information above, please answer the user's question in a frie
     }
 });
 
-app.listen(port, () => {
-    console.log(`Five Flows server is running at http://localhost:${port}`);
-});
+// Vercel serverless function export
+module.exports = app;
+
+// Local development server
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Five Flows server is running at http://localhost:${port}`);
+    });
+}
 
