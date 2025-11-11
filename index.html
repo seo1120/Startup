@@ -735,64 +735,6 @@
                     </div>
         </div>
         
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h3>Date Information</h3>
-                        <div class="info-item">
-                            <span class="info-label">Solar Calendar</span>
-                            <span class="info-value" id="solarDate">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Lunar Calendar</span>
-                            <span class="info-value" id="lunarDate">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Day of Week</span>
-                            <span class="info-value" id="weekday">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">28 Mansions</span>
-                            <span class="info-value" id="star28">-</span>
-                        </div>
-        </div>
-        
-                    <div class="info-card">
-                        <h3>Personal Information</h3>
-                        <div class="info-item">
-                            <span class="info-label">Zodiac</span>
-                            <span class="info-value" id="zodiac">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Gender</span>
-                            <span class="info-value" id="genderInfo">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Birthplace</span>
-                            <span class="info-value" id="birthplaceInfo">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Solar Term</span>
-                            <span class="info-value" id="solarTerm">-</span>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3>Time Information</h3>
-                        <div class="info-item">
-                            <span class="info-label">Local Time</span>
-                            <span class="info-value" id="localTime">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Timezone</span>
-                            <span class="info-value" id="timezoneInfo">-</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Adjusted Time</span>
-                            <span class="info-value" id="adjustedTime">-</span>
-                        </div>
-                    </div>
-    </div>
-
                 <div class="info-card">
                     <h3>Five Elements Analysis</h3>
                     <div class="elements-chart">
@@ -830,9 +772,9 @@
                 </div>
                 
                 <div class="analysis-card">
-                    <h3>Day Master Analysis</h3>
-                    <div class="analysis-content" id="analysisContent">
-                        -
+                    <h3>Saju Analysis</h3>
+                    <div class="analysis-content" id="analysisContent" style="line-height: 1.8; color: #4a4a4a;">
+                        <p style="text-align: center; color: #999;">Calculating your Saju analysis...</p>
                     </div>
                 </div>
                 
@@ -984,7 +926,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    displayResult(result.data);
+                    await displayResult(result.data);
                     document.getElementById('errorMessage').style.display = 'none';
                 } else {
                     showError(result.error);
@@ -1006,36 +948,6 @@
             document.getElementById('hourPillarHanja').textContent = data.pillars.hour.hanja;
             document.getElementById('hourPillarKorean').textContent = data.pillars.hour.korean;
             
-            // Date Information
-            document.getElementById('solarDate').innerHTML = 
-                `<strong>${data.solar.year}.${data.solar.month}.${data.solar.day}</strong>`;
-            document.getElementById('lunarDate').innerHTML = 
-                `<strong>${data.lunar.year}.${data.lunar.month}.${data.lunar.day}</strong>` + 
-                (data.lunar.isLeapMonth ? ' <em>(Leap Month)</em>' : '');
-            document.getElementById('weekday').innerHTML = 
-                `<strong>${data.additional.weekday.korean}</strong> (${data.additional.weekday.hanja})`;
-            document.getElementById('star28').innerHTML = data.additional.star28 ? `<strong>${data.additional.star28}</strong>` : '-';
-            
-            // Personal Information
-            document.getElementById('zodiac').innerHTML = `<strong>${data.additional.zodiac}</strong>`;
-            document.getElementById('genderInfo').innerHTML = 
-                `<strong>${data.input.gender === 'male' ? 'Male' : 'Female'}</strong>`;
-            
-            document.getElementById('birthplaceInfo').innerHTML = `<strong>${data.input.birthplace}</strong>`;
-            document.getElementById('solarTerm').innerHTML = data.additional.solarTerm ? `<strong>${data.additional.solarTerm}</strong>` : '-';
-            
-            // Time Information
-            if (data.input.original && data.input.adjusted) {
-                document.getElementById('localTime').innerHTML = 
-                    `<strong>${data.input.original.dateString} ${data.input.original.timeString}</strong>`;
-                
-                const timezoneName = data.input.timezone.split('/').pop().replace(/_/g, ' ');
-                document.getElementById('timezoneInfo').innerHTML = `<strong>${timezoneName}</strong>`;
-                
-                document.getElementById('adjustedTime').innerHTML = 
-                    `<strong>${data.input.adjusted.dateString} ${data.input.adjusted.timeString}</strong> <em>(KST)</em>`;
-            }
-            
             // Five Elements Chart
             const maxCount = Math.max(...Object.values(data.fiveElements.elements));
             const elementMap = {
@@ -1055,25 +967,7 @@
                 }, 100);
             });
             
-            // Day Master Analysis
-            const dayMaster = data.fiveElements.dayMaster;
-            const missing = data.fiveElements.missing.join(', ') || 'None';
-            const elementNames = {'목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water'};
-            const strengthNames = {'강': 'Strong', '중': 'Moderate', '약': 'Weak'};
-            const analysisText = `
-                <p><strong>Day Master</strong>: ${dayMaster.stem} (${elementNames[dayMaster.element]} Element)</p>
-                <p><strong>Strength</strong>: ${strengthNames[dayMaster.strength]}</p>
-                
-                <h3>Element Distribution</h3>
-                <ul>
-                    <li><strong>Dominant Element</strong>: ${elementNames[data.fiveElements.dominant]}</li>
-                    <li><strong>Missing Elements</strong>: ${data.fiveElements.missing.map(e => elementNames[e]).join(', ') || 'None'}</li>
-                </ul>
-                
-                <h3>Recommendations</h3>
-                <p>${getElementAdvice(dayMaster.element, dayMaster.strength, data.fiveElements.missing)}</p>
-            `;
-            document.getElementById('analysisContent').innerHTML = analysisText;
+            // 분석 결과는 displayResult 함수에서 자동으로 생성됨
             
             // Show result section
             document.getElementById('resultSection').style.display = 'block';
@@ -1123,36 +1017,112 @@
         
         // 계산된 사주 데이터 저장 (전역 변수)
         let currentSajuData = null;
+        let currentSajuAnalysis = null;
         
-        // displayResult 함수 수정 - 사주 데이터 저장
+        // XSS 방지 - HTML 이스케이프 함수
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 간단한 마크다운 파서
+        function parseMarkdown(text) {
+            if (!text) return '';
+            
+            let html = text;
+            
+            // 먼저 리스트 처리 (줄 단위로)
+            const lines = html.split('\n');
+            let inList = false;
+            let processedLines = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const listMatch = line.match(/^[\-\*] (.+)$/);
+                
+                if (listMatch) {
+                    if (!inList) {
+                        processedLines.push('<ul>');
+                        inList = true;
+                    }
+                    processedLines.push(`<li>${listMatch[1]}</li>`);
+                } else {
+                    if (inList) {
+                        processedLines.push('</ul>');
+                        inList = false;
+                    }
+                    processedLines.push(line);
+                }
+            }
+            
+            if (inList) {
+                processedLines.push('</ul>');
+            }
+            
+            html = processedLines.join('\n');
+            
+            // 헤더 변환
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // 강조 표시
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // 구분선 처리
+            html = html.replace(/^---$/gim, '<hr>');
+            
+            // 줄바꿈 처리 (빈 줄은 단락 구분)
+            html = html.split('\n\n').map(para => {
+                para = para.trim();
+                if (!para) return '';
+                if (para.startsWith('<')) return para; // 이미 HTML 태그
+                return '<p>' + para.replace(/\n/g, '<br>') + '</p>';
+            }).filter(p => p).join('');
+            
+            return html;
+        }
+        
+        // displayResult 함수 수정 - 사주 데이터 저장 및 분석 자동 생성
         const originalDisplayResult = displayResult;
-        displayResult = function(data) {
+        displayResult = async function(data) {
             originalDisplayResult(data);
             
-            // 채팅에 사용할 사주 데이터 형식으로 변환
-            const elementMap = {
-                '목': 'wood',
-                '화': 'fire',
-                '토': 'earth',
-                '금': 'metal',
-                '수': 'water'
-            };
+            // 전체 사주 데이터 저장 (서버에서 기대하는 형식)
+            currentSajuData = data;
+            currentSajuAnalysis = null; // 새로 계산할 때마다 풀이 초기화
             
-            const fiveElementsObj = {};
-            Object.entries(data.fiveElements.elements).forEach(([korean, count]) => {
-                const english = elementMap[korean];
-                if (english) {
-                    fiveElementsObj[english] = count;
+            // 분석 결과 자동 생성 및 표시
+            try {
+                const analysisResponse = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sajuData: data
+                    })
+                });
+                
+                if (analysisResponse.ok) {
+                    const analysisResult = await analysisResponse.json();
+                    if (analysisResult.success) {
+                        currentSajuAnalysis = analysisResult.analysis;
+                        
+                        // 분석 결과를 analysisContent에 표시
+                        const analysisContent = document.getElementById('analysisContent');
+                        if (analysisContent) {
+                            analysisContent.innerHTML = parseMarkdown(analysisResult.analysis);
+                        }
+                    }
                 }
-            });
-            
-            currentSajuData = {
-                year_pillar: data.pillars.year.korean,
-                month_pillar: data.pillars.month.korean,
-                day_pillar: data.pillars.day.korean,
-                hour_pillar: data.pillars.hour.korean,
-                five_elements: fiveElementsObj
-            };
+            } catch (error) {
+                console.error('Failed to generate analysis:', error);
+                // 분석 실패해도 기본 결과는 표시됨
+            }
         };
         
         // 채팅 기능
@@ -1182,10 +1152,38 @@
                 return;
             }
             
-            // 사용자 메시지 표시
+            // 사주 풀이가 없으면 먼저 생성
+            if (!currentSajuAnalysis) {
+                try {
+                    const analysisResponse = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sajuData: currentSajuData
+                        })
+                    });
+                    
+                    if (analysisResponse.ok) {
+                        const analysisResult = await analysisResponse.json();
+                        if (analysisResult.success) {
+                            currentSajuAnalysis = analysisResult.analysis;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to generate analysis:', error);
+                    // 풀이 생성 실패해도 채팅은 진행
+                }
+            }
+            
+            // 사용자 메시지 표시 (XSS 방지)
             const userMessageDiv = document.createElement('div');
             userMessageDiv.className = 'chat-message user-message';
-            userMessageDiv.innerHTML = `<div class="message-content">${question}</div>`;
+            const messageContentDiv = document.createElement('div');
+            messageContentDiv.className = 'message-content';
+            messageContentDiv.textContent = question; // textContent 사용으로 XSS 방지
+            userMessageDiv.appendChild(messageContentDiv);
             chatMessages.appendChild(userMessageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
@@ -1227,7 +1225,8 @@
                     },
                     body: JSON.stringify({
                         question: question,
-                        pillars: currentSajuData
+                        sajuData: currentSajuData,
+                        sajuAnalysis: currentSajuAnalysis
                     })
                 });
                 
@@ -1304,10 +1303,14 @@
                 if (!messageContent) {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'chat-message bot-message';
-                    errorDiv.innerHTML = `<div class="message-content" style="color: #c62828;">Server connection error. Please check if the server is running.</div>`;
+                    const errorContent = document.createElement('div');
+                    errorContent.className = 'message-content';
+                    errorContent.style.color = '#c62828';
+                    errorContent.textContent = 'Server connection error. Please check if the server is running.';
+                    errorDiv.appendChild(errorContent);
                     chatMessages.appendChild(errorDiv);
                 } else {
-                    messageContent.innerHTML = `<span style="color: #c62828;">Error: ${error.message || 'Server connection error. Please check if the server is running.'}</span>`;
+                    messageContent.innerHTML = `<span style="color: #c62828;">Error: ${escapeHtml(error.message || 'Server connection error. Please check if the server is running.')}</span>`;
                 }
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 

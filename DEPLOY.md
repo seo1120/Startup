@@ -5,7 +5,7 @@
 ### 1. 환경 변수 설정
 Vercel 대시보드에서 다음 환경 변수를 설정해야 합니다:
 
-- `GOOGLE_API_KEY` 또는 `GEMINI_API_KEY`: Google Generative AI API 키
+- `OPENAI_API_KEY`: OpenAI API 키
 
 ### 2. 데이터베이스 파일
 `manseryuk.db` 파일이 프로젝트에 포함되어 있어야 합니다. (이미 포함되어 있음)
@@ -41,7 +41,7 @@ vercel --prod
 3. "New Project" 클릭
 4. GitHub 레포지토리 선택
 5. 환경 변수 설정:
-   - `GOOGLE_API_KEY` 또는 `GEMINI_API_KEY` 추가
+   - `OPENAI_API_KEY` 추가
 6. "Deploy" 클릭
 
 ## 주의사항
