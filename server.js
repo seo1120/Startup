@@ -10,7 +10,7 @@ require('dotenv').config();
 const OpenAI = require('openai');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3001; // Next.js가 3000 포트를 사용하므로 3001로 변경
 
 // 환경 변수 검증
 if (!process.env.OPENAI_API_KEY) {
