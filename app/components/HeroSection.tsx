@@ -37,7 +37,7 @@ const HeroSection = () => {
         {/* 중앙 로고 */}
         <div className="flex justify-center mb-8 md:mb-12">
           <img 
-            src="/logo2.svg" 
+            src="/Logo2.svg" 
             alt="Five Flows Logo" 
             className="w-full max-w-[300px] md:max-w-[400px] h-auto"
           />
