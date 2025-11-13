@@ -52,8 +52,7 @@ export async function POST(request: NextRequest) {
       console.error('OPENAI_API_KEY environment variable is not set');
       return new Response(
         JSON.stringify({ 
-          error: 'AI service is not configured.',
-          message: 'Please configure OPENAI_API_KEY environment variable.'
+          error: 'I apologize, but the AI service is currently unavailable. Please try again later.'
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
@@ -195,7 +194,9 @@ export async function POST(request: NextRequest) {
           
           console.log('AI response streamed successfully');
         } catch (streamError: any) {
-          sendChunk({ error: streamError.message, done: true });
+          console.error('Streaming error:', streamError);
+          // 사용자 친화적인 에러 메시지
+          sendChunk({ error: 'I apologize, but I encountered an issue while processing your question. Please try again in a moment.', done: true });
           controller.close();
         }
       }
@@ -214,8 +215,7 @@ export async function POST(request: NextRequest) {
     console.error('Chat API error:', error);
     return new Response(
       JSON.stringify({ 
-        error: 'AI consultation service error occurred.',
-        message: error.message 
+        error: 'I apologize, but I encountered an issue. Please try again in a moment.'
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );

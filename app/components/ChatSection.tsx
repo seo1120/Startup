@@ -44,7 +44,7 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
     setIsLoading(true);
 
     // 사주 풀이가 없으면 먼저 생성
-    let currentAnalysis = sajuAnalysis;
+    let currentAnalysis: string | null = sajuAnalysis;
     if (!currentAnalysis) {
       try {
         const analysisResponse = await fetch('/api/analyze', {
@@ -56,9 +56,11 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
         if (analysisResponse.ok) {
           try {
             const analysisResult = await analysisResponse.json();
-            if (analysisResult.success) {
+            if (analysisResult.success && analysisResult.analysis) {
               currentAnalysis = analysisResult.analysis;
-              onAnalysisUpdate(currentAnalysis);
+              if (currentAnalysis) {
+                onAnalysisUpdate(currentAnalysis);
+              }
             }
           } catch (e) {
             console.error('Failed to parse analysis response:', e);
@@ -116,7 +118,7 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
                     const newMessages = [...prev];
                     newMessages[newMessages.length - 1] = {
                       type: 'bot',
-                      content: `Error: ${data.error}`,
+                      content: data.error,
                     };
                     return newMessages;
                   });
@@ -145,7 +147,7 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
         const newMessages = prev.slice(0, -1);
         newMessages.push({
           type: 'bot',
-          content: 'Server connection error. Please check if the server is running.',
+          content: 'I apologize, but I encountered a connection issue. Please try again in a moment.',
         });
         return newMessages;
       });

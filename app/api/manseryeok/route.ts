@@ -170,8 +170,7 @@ export async function POST(request: NextRequest) {
       console.error('Database connection error:', dbError);
       return NextResponse.json(
         { 
-          error: '데이터베이스 연결 오류가 발생했습니다.', 
-          details: process.env.NODE_ENV === 'production' ? 'Database connection failed' : dbError.message 
+          error: 'I apologize, but I encountered an issue while accessing the database. Please try again in a moment.'
         },
         { status: 500 }
       );
@@ -191,8 +190,7 @@ export async function POST(request: NextRequest) {
       db.close();
       return NextResponse.json(
         { 
-          error: '데이터베이스 쿼리 오류가 발생했습니다.', 
-          details: queryError.message 
+          error: 'I apologize, but I encountered an issue while processing your request. Please try again in a moment.'
         },
         { status: 500 }
       );
@@ -358,8 +356,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(
       { 
-        error: '서버 오류가 발생했습니다.', 
-        details: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message 
+        error: 'I apologize, but I encountered an issue. Please try again in a moment.'
       },
       { status: 500 }
     );

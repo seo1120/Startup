@@ -30,15 +30,10 @@ export default function Home() {
       if (!response.ok) {
         let errorMessage = `Server error: ${response.status} ${response.statusText}`;
         try {
-          const errorText = await response.text();
-          // HTML 에러 페이지인 경우
-          if (errorText.includes('<!DOCTYPE') || errorText.includes('<html')) {
-            errorMessage = `Express 서버가 실행되지 않았거나 연결할 수 없습니다. 포트 3001에서 서버가 실행 중인지 확인하세요.`;
-          } else {
-            errorMessage = errorText || errorMessage;
-          }
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || errorMessage;
         } catch (e) {
-          // 텍스트 파싱 실패 시 기본 메시지 사용
+          // JSON 파싱 실패 시 기본 메시지 사용
         }
         throw new Error(errorMessage);
       }
@@ -76,8 +71,8 @@ export default function Home() {
       } else {
         setError(result.error || 'Failed to calculate Saju');
       }
-    } catch (err) {
-      setError('Failed to connect to server. Please check if the server is running.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to calculate Saju. Please try again.');
       console.error('Error:', err);
     } finally {
       setIsLoading(false);

@@ -242,8 +242,7 @@ export async function POST(request: NextRequest) {
       console.error('Analysis generation error:', error);
       return NextResponse.json(
         {
-          error: '사주 풀이 생성 중 오류가 발생했습니다.',
-          message: error.message
+          error: 'I apologize, but I encountered an issue while generating your Saju analysis. Please try again in a moment.'
         },
         { status: 500 }
       );
@@ -252,8 +251,7 @@ export async function POST(request: NextRequest) {
     console.error('Analyze API error:', error);
     return NextResponse.json(
       {
-        error: '서버 오류가 발생했습니다.',
-        message: error.message
+        error: 'I apologize, but I encountered an issue. Please try again in a moment.'
       },
       { status: 500 }
     );

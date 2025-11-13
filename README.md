@@ -28,14 +28,14 @@
 ## Tech Stack
 
 ### Frontend
-- **Next.js 14** - React 프레임워크
+- **Next.js 14** - React 프레임워크 (App Router)
 - **Tailwind CSS** - 유틸리티 기반 CSS 프레임워크
 - **TypeScript** - 타입 안정성
 
 ### Backend
-- **Express.js** - Node.js 웹 프레임워크
-- **Better-SQLite3** - SQLite 데이터베이스
-- **OpenAI API** - AI 분석 기능
+- **Next.js API Routes** - 서버리스 API 엔드포인트
+- **Better-SQLite3** - SQLite 데이터베이스 (만세력 데이터)
+- **OpenAI API** - AI 분석 및 상담 기능
 
 ## Getting Started
 
@@ -58,22 +58,14 @@ npm install
 
 3. Set up environment variables
 ```bash
-cp env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Create .env file
+OPENAI_API_KEY=sk-your-openai-api-key-here
 ```
 
-4. Run the development servers
-
-**Terminal 1 - Express API Server:**
-```bash
-npm run server
-# Server runs on http://localhost:3001
-```
-
-**Terminal 2 - Next.js Frontend:**
+4. Run the development server
 ```bash
 npm run dev
-# Frontend runs on http://localhost:3000
+# Server runs on http://localhost:3000
 ```
 
 ### Build for Production
@@ -89,29 +81,57 @@ npm start
 ## Project Structure
 
 ```
-FiveFlows2/
+fiveflows/
 ├── app/                    # Next.js App Router
+│   ├── api/                # API Routes
+│   │   ├── analyze/        # Saju analysis generation
+│   │   ├── chat/           # AI consultation chat
+│   │   ├── geocode/        # Location to timezone
+│   │   └── manseryeok/     # Four Pillars calculation
 │   ├── components/         # React components
-│   ├── globals.css        # Global styles with Tailwind
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── server.js              # Express API server
-├── manseryuk.db          # SQLite database
-├── next.config.js        # Next.js configuration
-├── tailwind.config.js    # Tailwind CSS configuration
-└── package.json          # Dependencies
+│   │   ├── AnalysisCard.tsx
+│   │   ├── CalculatorForm.tsx
+│   │   ├── ChatSection.tsx
+│   │   ├── FiveElementsChart.tsx
+│   │   ├── FourPillarsDisplay.tsx
+│   │   └── ...
+│   ├── globals.css         # Global styles with Tailwind
+│   ├── layout.tsx          # Root layout
+│   └── page.tsx            # Home page
+├── middleware.ts           # Rate limiting & security headers
+├── manseryuk.db           # SQLite database (만세력 데이터)
+├── next.config.js          # Next.js configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+├── vercel.json             # Vercel deployment configuration
+└── package.json            # Dependencies
 ```
 
 ## API Endpoints
 
+All API endpoints are Next.js API Routes:
+
 - `POST /api/geocode` - Location to timezone conversion
-- `POST /api/manseryeok` - Calculate Four Pillars of Destiny
-- `POST /api/analyze` - Generate Saju analysis
-- `POST /api/chat` - AI consultation chat
+- `POST /api/manseryeok` - Calculate Four Pillars of Destiny (사주 계산)
+- `POST /api/analyze` - Generate Saju analysis (사주 풀이 생성)
+- `POST /api/chat` - AI consultation chat (AI 상담)
+
+## Security Features
+
+- **Rate Limiting**: 
+  - General API: 100 requests per 15 minutes
+  - AI endpoints: 20 requests per hour
+- **Security Headers**: XSS, CSRF, clickjacking protection
+- **Input Validation**: All user inputs are validated and sanitized
+- **Error Handling**: Sensitive information is never exposed in error messages
 
 ## Deployment
 
 The project is configured for Vercel deployment. See `DEPLOY.md` for detailed deployment instructions.
+
+### Environment Variables
+
+Set the following environment variables in Vercel:
+- `OPENAI_API_KEY`: Your OpenAI API key
 
 ## License
 

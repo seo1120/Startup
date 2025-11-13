@@ -170,26 +170,18 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Geocoding error:', error);
     
-    // 더 자세한 에러 정보 제공
-    let errorMessage = 'Geocoding failed';
+    // 에러 상세 정보는 서버 로그에만 기록
     if (error.response) {
-      // API 응답 에러
-      errorMessage = `API error: ${error.response.status} ${error.response.statusText}`;
-      console.error('API response error:', error.response.data);
+      console.error('API response error:', error.response.status, error.response.statusText);
     } else if (error.request) {
-      // 요청은 보냈지만 응답이 없음
-      errorMessage = 'No response from geocoding service. Please check your internet connection.';
-      console.error('No response received:', error.request);
+      console.error('No response received from geocoding service');
     } else {
-      // 기타 에러
-      errorMessage = error.message || 'Unknown error occurred';
+      console.error('Geocoding error details:', error.message);
     }
     
     return NextResponse.json(
       { 
-        error: 'Geocoding failed',
-        message: errorMessage,
-        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        error: 'I apologize, but I encountered an issue while searching for the location. Please try again in a moment.'
       },
       { status: 500 }
     );
