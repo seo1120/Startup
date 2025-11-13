@@ -1,0 +1,43 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- 왼쪽 곡선 괄호 -->
+  <path
+    d="M 80 30 Q 10 150 80 270"
+    fill="none"
+    stroke="#423514"
+    stroke-width="2"
+    opacity="0.5"
+  />
+  
+  <!-- 오른쪽 곡선 괄호 -->
+  <path
+    d="M 320 30 Q 390 150 320 270"
+    fill="none"
+    stroke="#423514"
+    stroke-width="2"
+    opacity="0.5"
+  />
+  
+  <!-- Five Flows 중앙 텍스트 -->
+  <text x="200" y="120" font-family="Gloock, serif" font-size="48" fill="#423514" text-anchor="middle">
+    Five
+  </text>
+  <text x="200" y="180" font-family="Gloock, serif" font-size="48" fill="#423514" text-anchor="middle">
+    Flows
+  </text>
+  
+  <!-- Self Discovery 왼쪽 -->
+  <g transform="translate(20, 150)">
+    <polygon points="0,0 3,3 0,6 -3,3" fill="#423514" />
+    <text x="8" y="4" font-family="Afacad Flux, sans-serif" font-size="14" fill="#423514">
+      Self Discovery
+    </text>
+  </g>
+  
+  <!-- Inner Balance 오른쪽 -->
+  <g transform="translate(380, 150)">
+    <text x="-8" y="4" font-family="Afacad Flux, sans-serif" font-size="14" fill="#423514" text-anchor="end">
+      Inner Balance
+    </text>
+    <polygon points="0,0 3,3 0,6 -3,3" fill="#423514" transform="translate(-8, -3)" />
+  </g>
+</svg>

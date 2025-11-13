@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  body {
+    @apply font-afacad bg-background min-h-screen leading-[1.8] text-primary;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply w-full py-4 bg-primary text-white border-none rounded-design text-afacad-lg font-afacad cursor-pointer transition-all duration-500 hover:opacity-90;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-primary text-white border-none rounded-design text-afacad-base font-afacad cursor-pointer transition-all duration-300 hover:opacity-90;
+  }
+
+  .card {
+    @apply bg-background rounded-design overflow-hidden;
+  }
+
+  .form-input {
+    @apply px-4 py-2 rounded-[12px] text-afacad-base font-afacad bg-white transition-all duration-300 focus:outline-none focus:border focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  /* select 요소 스타일 */
+  .form-input[type="select"],
+  select.form-input {
+    @apply pr-12;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23423514' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  /* 숫자 입력 필드 스피너 제거 */
+  .form-input.no-spinner::-webkit-outer-spin-button,
+  .form-input.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .form-input.no-spinner[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  .pillar-card {
+    @apply bg-white p-6 rounded-design shadow-[0_2px_10px_rgba(0,0,0,0.05)] border border-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Afacad Light */
+  .font-afacad-light {
+    font-family: 'Afacad Flux', sans-serif;
+    font-weight: 300;
+  }
+
+  /* Afacad Regular Italic */
+  .font-afacad-italic {
+    font-family: 'Afacad Flux', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* 16px Afacad Light */
+  .text-afacad-sm-light {
+    font-size: 16px;
+    font-family: 'Afacad Flux', sans-serif;
+    font-weight: 300;
+  }
+
+  /* 16px Afacad Italic (Regular) */
+  .text-afacad-sm-italic {
+    font-size: 16px;
+    font-family: 'Afacad Flux', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* 커스텀 점선: 1px dash - 4px gap (세로) */
+  .border-dashed-custom {
+    width: 1px;
+    min-width: 1px;
+    flex-shrink: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      #423514 0,
+      #423514 1px,
+      transparent 1px,
+      transparent 5px
+    );
+    background-size: 1px 5px;
+    background-repeat: repeat-y;
+    background-position: center;
+  }
+
+  /* 커스텀 점선: 1px dash - 4px gap (가로) */
+  .border-dashed-custom-horizontal {
+    height: 1px;
+    min-height: 1px;
+    flex-shrink: 0;
+    background-image: repeating-linear-gradient(
+      to right,
+      #423514 0,
+      #423514 1px,
+      transparent 1px,
+      transparent 5px
+    );
+    background-size: 5px 1px;
+    background-repeat: repeat-x;
+    background-position: center;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes dotWave {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  40% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+}
+
+.searching-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.searching-dots span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: dotWave 1.2s ease-in-out infinite;
+}
+
+.searching-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.searching-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.searching-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
