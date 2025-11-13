@@ -38,11 +38,11 @@ const FiveElementsChart = ({ elements }: FiveElementsChartProps) => {
   };
 
   const elementColors: { [key: string]: string } = {
-    wood: 'from-[#a8b89a] to-[#c5d0b8]',
-    fire: 'from-[#d4a574] to-[#e6c19a]',
-    earth: 'from-[#b8a082] to-[#d4c4a8]',
-    metal: 'from-[#9e9e9e] to-[#bdbdbd]',
-    water: 'from-[#8b9a7a] to-[#a8b89a]',
+    wood: 'rgba(171, 122, 32, 0.6)',
+    fire: 'rgba(214, 79, 79, 0.6)',
+    earth: 'rgba(234, 211, 108, 0.6)',
+    metal: 'rgba(164, 164, 164, 0.6)',
+    water: 'rgba(154, 192, 208, 0.6)',
   };
 
   useEffect(() => {
@@ -70,10 +70,13 @@ const FiveElementsChart = ({ elements }: FiveElementsChartProps) => {
 
   return (
     <div className="bg-background p-4 md:p-6 rounded-design">
-      <h3 className="text-primary mb-4 md:mb-6 text-gloock-base font-gloock">
-        Five Elements Analysis
+      <h3 className="text-primary text-center mb-3 md:mb-4 text-gloock-base font-gloock">
+        The Five Flows
       </h3>
-      <div className="bg-white p-4 md:p-6 rounded-[12px]">
+      <p className="text-afacad-sm-light text-primary mb-4 md:mb-6 text-center px-4">
+        Each element represents a unique flow of energy. This chart helps you see which energies are strong and which need restoration.
+      </p>
+      <div className="bg-background p-4 md:p-6 rounded-[12px]">
         {Object.entries(elements).map(([element, count]) => {
           const key = elementMap[element] as keyof typeof widths;
           const name = elementNames[element];
@@ -85,13 +88,18 @@ const FiveElementsChart = ({ elements }: FiveElementsChartProps) => {
                 <span className="inline-block w-[60px] md:w-[70px] font-afacad text-primary text-afacad-sm md:text-afacad-base">
                   {name}
                 </span>
-                <div className="flex-1 h-[24px] md:h-[30px] bg-background rounded-[12px] md:rounded-[15px] overflow-hidden border border-gray-200">
-                  <div
-                    className={`h-full flex items-center justify-end pr-2 md:pr-2.5 text-white font-bold transition-all duration-1000 bg-gradient-to-r ${color}`}
-                    style={{ width: `${widths[key]}%` }}
-                  >
-                    {count}
-                  </div>
+                <div className="flex-1 h-[28px] md:h-[36px] bg-white rounded-[18px] md:rounded-[22.5px] overflow-hidden">
+                  {widths[key] > 0 && (
+                    <div
+                      className="h-full flex items-center justify-end pr-2 md:pr-2.5 text-primary font-afacad transition-all duration-1000"
+                      style={{ 
+                        width: `${widths[key]}%`,
+                        backgroundColor: color
+                      }}
+                    >
+                      {count}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

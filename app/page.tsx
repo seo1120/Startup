@@ -5,6 +5,7 @@ import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import CalculatorForm from './components/CalculatorForm';
 import ResultsSection from './components/ResultsSection';
+import ShopSection from './components/ShopSection';
 import Footer from './components/Footer';
 
 export default function Home() {
@@ -101,7 +102,15 @@ export default function Home() {
             <div className="w-1 h-1 bg-primary rotate-45 self-center"></div>
           </div>
         </div>
-        <div className="card" id="calculator">
+        {/* 하단 가로 점선 */}
+        <div className="absolute left-2 md:left-4 right-2 md:right-4 bottom-8 md:bottom-10 flex items-center justify-center">
+          <div className="flex items-center gap-2 max-w-[600px] w-full">
+            <div className="w-1 h-1 bg-primary rotate-45"></div>
+            <div className="flex-1 border-dashed-custom-horizontal"></div>
+            <div className="w-1 h-1 bg-primary rotate-45"></div>
+          </div>
+        </div>
+        <div className="card" id="saju">
           <div className="p-5 md:p-10">
             <CalculatorForm onSubmit={handleCalculate} isLoading={isLoading} error={error} />
             {sajuData && (
@@ -114,6 +123,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <ShopSection />
       <Footer />
     </main>
   );

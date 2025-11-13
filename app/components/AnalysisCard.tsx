@@ -65,20 +65,27 @@ interface AnalysisCardProps {
 const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
   if (!analysis) {
     return (
-      <div className="bg-primary text-white p-6 md:p-8 rounded-design">
-        <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock">Saju Analysis</h3>
-        <div className="leading-[1.8] text-afacad-base font-afacad">
-          <p className="text-center text-white/70">Calculating your Saju analysis...</p>
+      <div className="bg-background p-6 md:p-8 rounded-design">
+        <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">Detailed Saju Analysis</h3>
+        <div className="leading-[1.8] text-afacad-sm-light font-afacad text-primary">
+          <p className="text-center">
+            Reading your elemental flow
+            <span className="searching-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-primary text-white p-6 md:p-8 rounded-design">
-      <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock">Saju Analysis</h3>
+    <div className="bg-background p-6 md:p-8 rounded-design">
+      <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">Saju Analysis</h3>
       <div
-        className="leading-[1.8] text-afacad-base font-afacad [&_h2]:my-3 md:[&_h2]:my-4 [&_h2]:text-gloock-base [&_h2]:font-gloock [&_h2]:text-white [&_h3]:my-3 md:[&_h3]:my-4 [&_h3]:text-gloock-sm [&_h3]:font-gloock [&_h3]:text-white [&_p]:my-2 [&_p]:text-white [&_p]:font-afacad [&_ul]:my-2 [&_ul]:pl-5 [&_li]:my-1 [&_li]:text-white [&_li]:font-afacad [&_strong]:text-white [&_strong]:font-bold"
+        className="leading-[1.8] text-afacad-sm-light font-afacad text-primary [&_h2]:my-3 md:[&_h2]:my-4 [&_h2]:text-gloock-base [&_h2]:font-gloock [&_h2]:text-primary [&_h3]:my-3 md:[&_h3]:my-4 [&_h3]:text-gloock-sm [&_h3]:font-gloock [&_h3]:text-primary [&_p]:my-2 [&_p]:text-primary [&_p]:font-afacad [&_p]:text-afacad-sm-light [&_ul]:my-2 [&_ul]:pl-5 [&_li]:my-1 [&_li]:text-primary [&_li]:font-afacad [&_li]:text-afacad-sm-light [&_strong]:text-primary [&_strong]:font-bold"
         dangerouslySetInnerHTML={{ __html: parseMarkdown(analysis) }}
       />
     </div>

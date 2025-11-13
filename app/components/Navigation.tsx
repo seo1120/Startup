@@ -45,31 +45,33 @@ const Navigation = () => {
         <div className="absolute top-44px left-4 right-4 flex justify-center mt-2">
           <div className="bg-background/85 backdrop-blur-[4px] rounded-design-sm shadow-[0_4px_12px_rgba(0,0,0,0.10)] w-full max-w-[600px] py-3 px-6">
             <ul className="flex flex-col">
-              <li className="border-b border-dashed border-primary/30 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0">
-                <a 
-                  href="#home" 
-                  onClick={(e) => scrollToSection(e, 'home')}
-                  className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
-                >
-                  Home
-                </a>
-              </li>
-              <li className="border-b border-dashed border-primary/30 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0">
-                <a 
-                  href="#calculator" 
-                  onClick={(e) => scrollToSection(e, 'calculator')}
-                  className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
-                >
-                  Calculate
-                </a>
-              </li>
-              <li className="border-b border-dashed border-primary/30 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0">
+              <li className="pb-2 mb-2">
+                <div className="border-dashed-custom-horizontal mb-2"></div>
                 <a 
                   href="#about" 
                   onClick={(e) => scrollToSection(e, 'about')}
                   className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
                 >
                   About
+                </a>
+              </li>
+              <li className="pb-2 mb-2">
+                <div className="border-dashed-custom-horizontal mb-2"></div>
+                <a 
+                  href="#saju" 
+                  onClick={(e) => scrollToSection(e, 'saju')}
+                  className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
+                >
+                  Saju
+                </a>
+              </li>
+              <li className="pb-2 mb-0">
+                <a 
+                  href="#shop" 
+                  onClick={(e) => scrollToSection(e, 'shop')}
+                  className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
+                >
+                  Shop
                 </a>
               </li>
             </ul>

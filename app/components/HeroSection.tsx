@@ -2,7 +2,7 @@
 
 const HeroSection = () => {
   const scrollToCalculator = () => {
-    const element = document.getElementById('calculator');
+    const element = document.getElementById('saju');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -11,23 +11,24 @@ const HeroSection = () => {
   return (
     <section 
       className="bg-background relative overflow-hidden"
-      id="home"
+      id="about"
     >
-      {/* 좌우 장식 점선 */}
-      <div className="absolute left-2 md:left-4 top-0 bottom-0">
-        <div className="h-full flex flex-col pb-5">
-          <div className="w-1 h-1 bg-primary rotate-45 self-center"></div>
-          <div className="flex-1 border-dashed-custom self-center"></div>
+      <div className="max-w-[1200px] mx-auto relative">
+        {/* 좌우 장식 점선 */}
+        <div className="absolute left-2 md:left-4 top-0 bottom-0">
+          <div className="h-full flex flex-col pb-5">
+            <div className="w-1 h-1 bg-primary rotate-45 self-center"></div>
+            <div className="flex-1 border-dashed-custom self-center"></div>
+          </div>
         </div>
-      </div>
-      <div className="absolute right-2 md:right-4 top-0 bottom-0">
-        <div className="h-full flex flex-col pb-5">
-          <div className="w-1 h-1 bg-primary rotate-45 self-center"></div>
-          <div className="flex-1 border-dashed-custom self-center"></div>
+        <div className="absolute right-2 md:right-4 top-0 bottom-0">
+          <div className="h-full flex flex-col pb-5">
+            <div className="w-1 h-1 bg-primary rotate-45 self-center"></div>
+            <div className="flex-1 border-dashed-custom self-center"></div>
+          </div>
         </div>
-      </div>
 
-      <div className="relative z-10 max-w-[600px] mx-auto px-4 pt-0 pb-5">
+        <div className="relative z-10 max-w-[600px] mx-auto px-4 pt-0 pb-5">
         {/* About 제목 */}
         <h1 className="text-gloock-base text-primary mb-8 md:mb-12 font-gloock text-center">
           About
@@ -36,7 +37,7 @@ const HeroSection = () => {
         {/* 중앙 로고 */}
         <div className="flex justify-center mb-8 md:mb-12">
           <img 
-            src="/logo.svg" 
+            src="/logo2.svg" 
             alt="Five Flows Logo" 
             className="w-full max-w-[300px] md:max-w-[400px] h-auto"
           />
@@ -68,13 +69,14 @@ const HeroSection = () => {
             Explore Saju test ↓
           </button>
         </div>
-      </div>
 
-      {/* 가로 점선 그래픽 (CTA 버튼 아래) */}
-      <div className="absolute left-2 md:left-4 right-2 md:right-4 bottom-2.5 flex items-center justify-center gap-2">
-        <div className="w-1 h-1 bg-primary rotate-45"></div>
-        <div className="flex-1 border-dashed-custom-horizontal"></div>
-        <div className="w-1 h-1 bg-primary rotate-45"></div>
+        {/* 가로 점선 그래픽 (CTA 버튼 아래) */}
+        <div className="absolute left-2 md:left-4 right-2 md:right-4 bottom-2.5 flex items-center justify-center gap-2">
+          <div className="w-1 h-1 bg-primary rotate-45"></div>
+          <div className="flex-1 border-dashed-custom-horizontal"></div>
+          <div className="w-1 h-1 bg-primary rotate-45"></div>
+        </div>
+        </div>
       </div>
     </section>
   );

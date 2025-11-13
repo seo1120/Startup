@@ -192,19 +192,19 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
           ))}
           <div ref={messagesEndRef} />
         </div>
-        <div className="flex gap-2 md:gap-2.5 items-end">
+        <div className="flex gap-2 md:gap-2.5 items-center">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Enter your question..."
             rows={2}
-            className="flex-1 p-3 border-none rounded-[12px] font-afacad text-afacad-base resize-none bg-white form-input"
+            className="flex-1 p-3 border-none rounded-[12px] font-afacad text-afacad-base resize-none bg-white form-input min-h-[60px] md:min-h-[72px]"
           />
           <button
             onClick={sendMessage}
             disabled={isLoading || !input.trim()}
-            className="px-4 md:px-6 py-2 md:py-3 bg-primary text-white border-none rounded-[12px] text-afacad-base font-afacad cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap"
+            className="px-4 md:px-6 h-[60px] md:h-[72px] bg-primary text-white border-none rounded-[12px] text-afacad-base font-afacad cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">

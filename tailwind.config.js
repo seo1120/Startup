@@ -38,6 +38,8 @@ module.exports = {
       fontFamily: {
         gloock: ['Gloock', 'serif'],
         afacad: ['Afacad Flux', 'sans-serif'],
+        hanja: ['WDXL Lubrifont SC', 'serif'],
+        nanum: ['Nanum Gothic', 'sans-serif'],
       },
       fontSize: {
         'gloock-sm': '17px',
