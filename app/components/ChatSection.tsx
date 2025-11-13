@@ -23,7 +23,10 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
   const chatMessagesRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // 채팅 메시지 컨테이너 내부에서만 스크롤 (페이지 전체 스크롤 방지)
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -167,7 +170,7 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
   return (
     <div className="bg-background p-4 md:p-6 rounded-design">
       <h3 className="text-primary mb-4 md:mb-6 text-gloock-base font-gloock">
-        AI Saju Consultation
+        Flow Q&A
       </h3>
       <div>
         <div

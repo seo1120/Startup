@@ -60,13 +60,18 @@ const parseMarkdown = (text: string): string => {
 
 interface AnalysisCardProps {
   analysis: string | null;
+  userName?: string;
 }
 
-const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
+const AnalysisCard = ({ analysis, userName }: AnalysisCardProps) => {
+  const displayTitle = userName 
+    ? `${userName}'s Saju Analysis`
+    : 'Saju Analysis';
+
   if (!analysis) {
     return (
       <div className="bg-background p-6 md:p-8 rounded-design">
-        <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">Detailed Saju Analysis</h3>
+        <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">{displayTitle}</h3>
         <div className="leading-[1.8] text-afacad-sm-light font-afacad text-primary">
           <p className="text-center">
             Reading your elemental flow
@@ -83,9 +88,9 @@ const AnalysisCard = ({ analysis }: AnalysisCardProps) => {
 
   return (
     <div className="bg-background p-6 md:p-8 rounded-design">
-      <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">Saju Analysis</h3>
+      <h3 className="mb-4 md:mb-6 text-gloock-base font-gloock text-primary">{displayTitle}</h3>
       <div
-        className="leading-[1.8] text-afacad-sm-light font-afacad text-primary [&_h2]:my-3 md:[&_h2]:my-4 [&_h2]:text-gloock-base [&_h2]:font-gloock [&_h2]:text-primary [&_h3]:my-3 md:[&_h3]:my-4 [&_h3]:text-gloock-sm [&_h3]:font-gloock [&_h3]:text-primary [&_p]:my-2 [&_p]:text-primary [&_p]:font-afacad [&_p]:text-afacad-sm-light [&_ul]:my-2 [&_ul]:pl-5 [&_li]:my-1 [&_li]:text-primary [&_li]:font-afacad [&_li]:text-afacad-sm-light [&_strong]:text-primary [&_strong]:font-bold"
+        className="leading-[1.8] text-afacad-sm-light font-afacad text-primary [&_h2]:my-3 md:[&_h2]:my-4 [&_h2]:text-gloock-base [&_h2]:font-gloock [&_h2]:text-primary [&_h3]:my-3 md:[&_h3]:my-4 [&_h3]:text-gloock-sm [&_h3]:font-gloock [&_h3]:text-primary [&_p]:my-2 [&_p]:text-primary [&_p]:font-afacad [&_p]:text-afacad-sm-light [&_ul]:my-2 [&_ul]:pl-5 [&_ul]:list-disc [&_li]:my-1 [&_li]:text-primary [&_li]:font-afacad [&_li]:text-afacad-sm-light [&_strong]:text-primary [&_strong]:font-bold [&_hr]:my-6 [&_hr]:border-primary/20"
         dangerouslySetInnerHTML={{ __html: parseMarkdown(analysis) }}
       />
     </div>

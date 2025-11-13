@@ -52,6 +52,7 @@ export default function Home() {
             },
             body: JSON.stringify({
               sajuData: result.data,
+              name: formData.name,
             }),
           });
 

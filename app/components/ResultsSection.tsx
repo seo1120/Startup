@@ -14,6 +14,7 @@ interface ResultsSectionProps {
 
 const ResultsSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ResultsSectionProps) => {
   const resultRef = useRef<HTMLDivElement>(null);
+  const userName = sajuData?.input?.name || '';
 
   useEffect(() => {
     if (resultRef.current) {
@@ -25,7 +26,7 @@ const ResultsSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ResultsSec
     <div ref={resultRef} className="mt-6 md:mt-10 animate-fadeIn space-y-6 md:space-y-8">
       <FourPillarsDisplay pillars={sajuData.pillars} />
       <FiveElementsChart elements={sajuData.fiveElements.elements} />
-      <AnalysisCard analysis={sajuAnalysis} />
+      <AnalysisCard analysis={sajuAnalysis} userName={userName} />
       <ChatSection sajuData={sajuData} sajuAnalysis={sajuAnalysis} onAnalysisUpdate={onAnalysisUpdate} />
     </div>
   );

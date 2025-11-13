@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getSajuAnalysisPrompt } from '../../utils/sajuAnalysisPrompt';
 
 // 계절별 인사 멘트 생성
 function getSeasonalGreeting(month: number) {
@@ -87,10 +88,18 @@ async function generateSajuAnalysis(sajuData: any) {
   const ampm = birthHour >= 12 ? 'PM' : 'AM';
   const timeString = `${hour12}:${String(birthMinute).padStart(2, '0')} ${ampm}`;
   
+  // 사용자 이름 가져오기
+  const userName = sajuData.input?.name || name || '';
+  const displayName = userName || (gender === 'male' ? 'this person' : 'this person');
+  
   // 인사 멘트 (고정)
   let greeting = `${seasonalGreeting}\n\n`;
   greeting += `This is a wonderful time to reflect on the past year and prepare your heart for what's ahead.\n\n`;
-  greeting += `Let's explore the Saju of a ${gender} born on ${birthMonth}/${birthDay}/${birthYear} at ${timeString} in ${birthplace}.\n\n`;
+  if (userName) {
+    greeting += `Today, let's explore the Saju of ${userName}, a ${gender} born on ${birthMonth}/${birthDay}/${birthYear} at ${timeString} in ${birthplace}.\n\n`;
+  } else {
+    greeting += `Today, let's explore the Saju of a ${gender} born on ${birthMonth}/${birthDay}/${birthYear} at ${timeString} in ${birthplace}.\n\n`;
+  }
   greeting += `Please note that this service is operated on a personal server, and any support is optional. The interpretation content is always provided equally, regardless of support.\n\n`;
   
   // 기둥 기본 설명 섹션 (고정)
@@ -142,63 +151,175 @@ Dominant Element: ${sajuData.fiveElements.dominant}
 Missing Elements: ${sajuData.fiveElements.missing.length > 0 ? sajuData.fiveElements.missing.join(', ') : 'None'}
   `.trim();
   
-  const analysisPrompt = `You are a wellness counselor who uses traditional Saju (Four Pillars of Destiny) as a tool for self-understanding and personal growth. Your approach is warm, empathetic, and focused on helping people understand themselves better.
-
-Based on the following Saju information, provide a detailed interpretation:
-
-${sajuInfo}
-
-Please write in the following structure:
-
-## Step 2. Personal Interpretation of Your Four Pillars
-
-For each of the four pillars (Year, Month, Day, Hour), provide a personalized interpretation:
-- **Year Pillar (${sajuData.pillars.year.hanja} ${sajuData.pillars.year.korean})**: Explain what this specific pillar means for this person personally, how it influences their roots and foundation.
-- **Month Pillar (${sajuData.pillars.month.hanja} ${sajuData.pillars.month.korean})**: Explain what this specific pillar means for this person personally, how it influences their social life and career.
-- **Day Pillar (${sajuData.pillars.day.hanja} ${sajuData.pillars.day.korean})**: Explain what this specific pillar means for this person personally, how it represents their core self.
-- **Hour Pillar (${sajuData.pillars.hour.hanja} ${sajuData.pillars.hour.korean})**: Explain what this specific pillar means for this person personally, how it influences their inner world.
-
-## Step 3. Overall Assessment
-
-After explaining each pillar, provide a comprehensive overall assessment focusing on:
-
-1. **Who You Are**: Describe their natural personality, energy patterns, and inner nature based on their Four Pillars. Be specific and personal, like "You are someone who..." or "Your nature tends to..."
-
-2. **Your Natural Strengths**: Highlight their inherent gifts and talents. Frame it as self-discovery, not fortune-telling.
-
-3. **Areas for Growth**: Gently mention areas where they might find balance or growth, framed as opportunities for wellness.
-
-4. **Energy Patterns**: Explain how their Five Elements balance affects their daily energy, emotions, and well-being.
-
-5. **Wellness Recommendations**: Suggest lifestyle, self-care, or mindfulness practices that align with their natural energy patterns.
-
-6. **Understanding Your Flow**: Help them understand their natural rhythms and how to work with them, not against them.
-
-Write as if you're speaking directly to the person, using "you" and a warm, understanding tone. Write in a warm, conversational tone. Avoid fortune-telling language. Instead, focus on self-awareness, personal growth, and wellness. Use English, and make it feel like a personal counseling session. The total length should be about 600-800 words.`;
+  // 프롬프트 파일에서 가져오기
+  const analysisPrompt = getSajuAnalysisPrompt(sajuInfo);
   
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
-          role: 'system',
-          content: 'You are a warm, empathetic wellness counselor who uses traditional Saju (Four Pillars of Destiny) as a tool for self-understanding and personal growth. You help people understand themselves better through understanding their natural energy patterns. Your approach is supportive, non-judgmental, and focused on wellness and self-awareness rather than fortune-telling.'
-        },
-        {
           role: 'user',
           content: analysisPrompt
         }
       ],
       temperature: 0.7,
-      max_tokens: 2000
+      max_tokens: 3000,
+      response_format: { type: 'json_object' } // JSON 형식으로 응답 요구
     });
     
-    const llmInterpretation = response.choices[0].message.content;
+    const llmResponse = response.choices[0].message.content;
     
-    // 최종 결과 조합
+    // JSON 파싱 시도
+    let analysisData;
+    try {
+      analysisData = JSON.parse(llmResponse || '{}');
+    } catch (parseError) {
+      console.error('Failed to parse LLM JSON response:', parseError);
+      // JSON 파싱 실패 시 기존 형식으로 폴백
+      analysisData = { longFormNarrative: llmResponse || 'Analysis generation failed.' };
+    }
+    
+    // 최종 결과 조합 (JSON 데이터를 구조화된 형식으로 변환)
     let finalAnalysis = greeting;
     finalAnalysis += pillarSection;
-    finalAnalysis += llmInterpretation;
+    
+    // JSON 데이터를 마크다운 형식으로 변환
+    if (analysisData.coreHook) {
+      finalAnalysis += `## ${analysisData.coreHook}\n\n`;
+    }
+    
+    if (analysisData.energySummary) {
+      finalAnalysis += `${analysisData.energySummary}\n\n`;
+    }
+    
+    // Keywords
+    if (analysisData.keywords && analysisData.keywords.length > 0) {
+      finalAnalysis += `### Keywords\n\n`;
+      finalAnalysis += analysisData.keywords.map((k: string) => `• ${k}`).join(' ') + `\n\n`;
+    }
+    
+    // Element Balance
+    if (analysisData.elementBalance) {
+      finalAnalysis += `### Element Balance\n\n`;
+      if (analysisData.elementBalance.wood) {
+        finalAnalysis += `**Wood (목)**: ${analysisData.elementBalance.wood}\n\n`;
+      }
+      if (analysisData.elementBalance.fire) {
+        finalAnalysis += `**Fire (화)**: ${analysisData.elementBalance.fire}\n\n`;
+      }
+      if (analysisData.elementBalance.earth) {
+        finalAnalysis += `**Earth (토)**: ${analysisData.elementBalance.earth}\n\n`;
+      }
+      if (analysisData.elementBalance.metal) {
+        finalAnalysis += `**Metal (금)**: ${analysisData.elementBalance.metal}\n\n`;
+      }
+      if (analysisData.elementBalance.water) {
+        finalAnalysis += `**Water (수)**: ${analysisData.elementBalance.water}\n\n`;
+      }
+      if (analysisData.elementBalance.overallBalance) {
+        finalAnalysis += `**Overall Balance**: ${analysisData.elementBalance.overallBalance}\n\n`;
+      }
+    }
+    
+    // Life Domains
+    if (analysisData.lifeDomains) {
+      finalAnalysis += `### Life Domains\n\n`;
+      if (analysisData.lifeDomains.foundation) {
+        finalAnalysis += `**Foundation (Year Pillar)**: ${analysisData.lifeDomains.foundation}\n\n`;
+      }
+      if (analysisData.lifeDomains.socialFlow) {
+        finalAnalysis += `**Social Flow (Month Pillar)**: ${analysisData.lifeDomains.socialFlow}\n\n`;
+      }
+      if (analysisData.lifeDomains.coreSelf) {
+        finalAnalysis += `**Core Self (Day Pillar)**: ${analysisData.lifeDomains.coreSelf}\n\n`;
+      }
+      if (analysisData.lifeDomains.innerWorld) {
+        finalAnalysis += `**Inner World (Hour Pillar)**: ${analysisData.lifeDomains.innerWorld}\n\n`;
+      }
+    }
+    
+    // Strengths
+    if (analysisData.strengths && analysisData.strengths.length > 0) {
+      finalAnalysis += `### Your Natural Strengths\n\n`;
+      analysisData.strengths.forEach((strength: string) => {
+        finalAnalysis += `• ${strength}\n`;
+      });
+      finalAnalysis += `\n`;
+    }
+    
+    // Growth Opportunities
+    if (analysisData.growthOpportunities && analysisData.growthOpportunities.length > 0) {
+      finalAnalysis += `### Growth Opportunities\n\n`;
+      analysisData.growthOpportunities.forEach((opportunity: string) => {
+        finalAnalysis += `• ${opportunity}\n`;
+      });
+      finalAnalysis += `\n`;
+    }
+    
+    // Flow Guidance
+    if (analysisData.flowGuidance) {
+      finalAnalysis += `### Flow Guidance\n\n`;
+      if (analysisData.flowGuidance.currentEnergy) {
+        finalAnalysis += `**Current Energy**: ${analysisData.flowGuidance.currentEnergy}\n\n`;
+      }
+      if (analysisData.flowGuidance.upcomingInfluence) {
+        finalAnalysis += `**Upcoming Influence**: ${analysisData.flowGuidance.upcomingInfluence}\n\n`;
+      }
+      if (analysisData.flowGuidance.supportiveActions && analysisData.flowGuidance.supportiveActions.length > 0) {
+        finalAnalysis += `**Supportive Actions**:\n`;
+        analysisData.flowGuidance.supportiveActions.forEach((action: string) => {
+          finalAnalysis += `• ${action}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+      if (analysisData.flowGuidance.thingsToBeCautiousOf && analysisData.flowGuidance.thingsToBeCautiousOf.length > 0) {
+        finalAnalysis += `**Things to Be Cautious Of**:\n`;
+        analysisData.flowGuidance.thingsToBeCautiousOf.forEach((caution: string) => {
+          finalAnalysis += `• ${caution}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+    }
+    
+    // Wellness Recommendations
+    if (analysisData.wellnessRecommendations) {
+      finalAnalysis += `### Wellness Recommendations\n\n`;
+      if (analysisData.wellnessRecommendations.mind && analysisData.wellnessRecommendations.mind.length > 0) {
+        finalAnalysis += `**Mind**:\n`;
+        analysisData.wellnessRecommendations.mind.forEach((rec: string) => {
+          finalAnalysis += `• ${rec}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+      if (analysisData.wellnessRecommendations.body && analysisData.wellnessRecommendations.body.length > 0) {
+        finalAnalysis += `**Body**:\n`;
+        analysisData.wellnessRecommendations.body.forEach((rec: string) => {
+          finalAnalysis += `• ${rec}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+      if (analysisData.wellnessRecommendations.routine && analysisData.wellnessRecommendations.routine.length > 0) {
+        finalAnalysis += `**Routine**:\n`;
+        analysisData.wellnessRecommendations.routine.forEach((rec: string) => {
+          finalAnalysis += `• ${rec}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+      if (analysisData.wellnessRecommendations.relationships && analysisData.wellnessRecommendations.relationships.length > 0) {
+        finalAnalysis += `**Relationships**:\n`;
+        analysisData.wellnessRecommendations.relationships.forEach((rec: string) => {
+          finalAnalysis += `• ${rec}\n`;
+        });
+        finalAnalysis += `\n`;
+      }
+    }
+    
+    // Long Form Narrative
+    if (analysisData.longFormNarrative) {
+      finalAnalysis += `## Deep Insight\n\n${analysisData.longFormNarrative}\n\n`;
+    }
+    
     finalAnalysis += `\n\n---\n\n`;
     finalAnalysis += `If you have more detailed questions or want to explore specific aspects of your Saju, please feel free to ask in the chat below. I'm here to help you understand yourself better. 💚`;
     
@@ -212,7 +333,7 @@ Write as if you're speaking directly to the person, using "you" and a warm, unde
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sajuData } = body;
+    const { sajuData, name } = body;
     
     if (!sajuData || typeof sajuData !== 'object') {
       return NextResponse.json(

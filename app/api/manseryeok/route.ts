@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
   
   try {
     const body = await request.json();
-    const { year, month, day, hour, minute, gender, timezone, birthplace } = body;
+    const { year, month, day, hour, minute, gender, timezone, birthplace, name } = body;
     
     // 입력 검증
     try {
@@ -318,6 +318,7 @@ export async function POST(request: NextRequest) {
         },
         fiveElements: fiveElements,
         input: {
+          name: name || '',
           gender: gender,
           birthplace: birthplace || 'Not provided',
           timezone: timezone,
