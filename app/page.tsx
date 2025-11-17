@@ -44,6 +44,12 @@ export default function Home() {
       if (result.success) {
         setSajuData(result.data);
         
+        // Analytics: 사주 계산 완료 추적
+        if (typeof window !== 'undefined') {
+          const { analytics } = require('./utils/analytics');
+          analytics.trackCalculateComplete();
+        }
+        
         // 자동으로 분석 생성
         try {
           const analysisResponse = await fetch('/api/analyze', {
@@ -64,6 +70,12 @@ export default function Home() {
                 setSajuAnalysis(analysisResult.analysis);
                 if (analysisResult.analysisData) {
                   setSajuAnalysisData(analysisResult.analysisData);
+                }
+                
+                // Analytics: 분석 생성 완료 추적
+                if (typeof window !== 'undefined') {
+                  const { analytics } = require('./utils/analytics');
+                  analytics.trackAnalysisComplete();
                 }
               }
             } catch (e) {

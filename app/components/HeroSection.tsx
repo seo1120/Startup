@@ -2,6 +2,12 @@
 
 const HeroSection = () => {
   const scrollToCalculator = () => {
+    // Analytics: Explore Saju 버튼 클릭 추적
+    if (typeof window !== 'undefined') {
+      const { analytics } = require('../utils/analytics');
+      analytics.trackExploreClick();
+    }
+    
     const element = document.getElementById('saju');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });

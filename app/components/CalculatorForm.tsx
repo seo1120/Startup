@@ -96,6 +96,12 @@ const CalculatorForm = ({ onSubmit, isLoading, error }: CalculatorFormProps) => 
       return;
     }
 
+    // Analytics: 사주 계산 버튼 클릭 추적
+    if (typeof window !== 'undefined') {
+      const { analytics } = require('../utils/analytics');
+      analytics.trackCalculateClick();
+    }
+
     onSubmit({
       name: formData.name,
       year: parseInt(formData.year.toString()) || 0,

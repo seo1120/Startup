@@ -41,6 +41,12 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
       return;
     }
 
+    // Analytics: 채팅 메시지 전송 추적
+    if (typeof window !== 'undefined') {
+      const { analytics } = require('../utils/analytics');
+      analytics.trackChatMessage(input.trim().length);
+    }
+
     const userMessage: Message = { type: 'user', content: input.trim() };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
