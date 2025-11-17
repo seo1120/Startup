@@ -81,7 +81,7 @@ const CalculatorForm = ({ onSubmit, isLoading, error }: CalculatorFormProps) => 
           setLocationStatus('⚠ Location not found. Please try a different search term.');
         }
       } catch (err: any) {
-        console.error('Geocode error:', err);
+        // 에러는 조용히 처리 (사용자에게는 이미 상태 메시지 표시됨)
         setFormData(prev => ({ ...prev, timezone: '' }));
         setLocationStatus(`⚠ Search failed: ${err.message || 'Please try again.'}`);
       }

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { logger } from '../../utils/logger';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { location } = body;
     
-    console.log('Geocode request received:', { location: location?.substring(0, 50) });
+    logger.log('Geocode request received');
     
     if (!location || typeof location !== 'string') {
       return NextResponse.json(
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     
     // OpenStreetMap Nominatim API
     const nominatimUrl = `https://nominatim.openstreetmap.org/search`;
-    console.log('Calling Nominatim API for:', sanitizedLocation);
+    logger.log('Calling Nominatim API');
     
     const response = await axios.get(nominatimUrl, {
       params: {
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    console.log('Nominatim API response:', response.data?.length || 0, 'results');
+    logger.log('Nominatim API response received');
     
     if (!response.data || response.data.length === 0) {
       return NextResponse.json(
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     const longitude = parseFloat(result.lon);
     const address = result.address || {};
     
-    console.log('Found location:', { latitude, longitude, address: address.city || address.town });
+    logger.log('Location found');
     
     // 위도/경도 → timezone (도시/국가 매핑 사용)
     const countryCode = address.country_code?.toUpperCase();
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
     // 도시명으로 먼저 찾기
     if (cityName && cityTimezoneMap[cityName]) {
       timezone = cityTimezoneMap[cityName];
-      console.log('Timezone found via city mapping:', timezone);
+      logger.log('Timezone found via city mapping');
     } else {
       // 국가 코드 기반 기본 타임존 (간단한 매핑)
       const countryTimezoneMap: { [key: string]: string } = {
@@ -121,7 +122,7 @@ export async function POST(request: NextRequest) {
       
       if (countryCode && countryTimezoneMap[countryCode]) {
         timezone = countryTimezoneMap[countryCode];
-        console.log('Timezone found via country mapping:', timezone);
+        logger.log('Timezone found via country mapping');
       } else {
         // 위도 기반 기본 추정 (정확하지 않지만 작동)
         if (longitude >= -180 && longitude < -30) {
@@ -138,7 +139,7 @@ export async function POST(request: NextRequest) {
           // 동아시아/오세아니아
           timezone = 'Asia/Tokyo';
         }
-        console.log('Timezone estimated via coordinates:', timezone);
+        logger.log('Timezone estimated via coordinates');
       }
     }
     
@@ -168,16 +169,7 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error: any) {
-    console.error('Geocoding error:', error);
-    
-    // 에러 상세 정보는 서버 로그에만 기록
-    if (error.response) {
-      console.error('API response error:', error.response.status, error.response.statusText);
-    } else if (error.request) {
-      console.error('No response received from geocoding service');
-    } else {
-      console.error('Geocoding error details:', error.message);
-    }
+    logger.error('Geocoding error', error);
     
     return NextResponse.json(
       { 

@@ -79,18 +79,17 @@ export default function Home() {
                 }
               }
             } catch (e) {
-              console.error('Failed to parse analysis response:', e);
+              // 에러는 조용히 처리 (사용자에게는 이미 에러 메시지 표시됨)
             }
           }
         } catch (err) {
-          console.error('Failed to generate analysis:', err);
+          // 에러는 조용히 처리
         }
       } else {
         setError(result.error || 'Failed to calculate Saju');
       }
     } catch (err: any) {
       setError(err.message || 'Failed to calculate Saju. Please try again.');
-      console.error('Error:', err);
     } finally {
       setIsLoading(false);
     }

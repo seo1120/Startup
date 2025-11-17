@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Database from 'better-sqlite3';
 import path from 'path';
 import moment from 'moment-timezone';
+import { logger } from '../../utils/logger';
 
 // 입력 검증 함수
 function validateDate(year: number, month: number, day: number, hour: number, minute: number) {
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
     try {
       db = new Database(dbPath, { readonly: true });
     } catch (dbError: any) {
-      console.error('Database connection error:', dbError);
+      logger.error('Database connection error', dbError);
       return NextResponse.json(
         { 
           error: 'I apologize, but I encountered an issue while accessing the database. Please try again in a moment.'
@@ -186,7 +187,7 @@ export async function POST(request: NextRequest) {
     try {
       result = db.prepare(query).get(adjustedYear, adjustedMonth.toString(), adjustedDay.toString());
     } catch (queryError: any) {
-      console.error('Query error:', queryError);
+      logger.error('Query error', queryError);
       db.close();
       return NextResponse.json(
         { 
@@ -270,7 +271,7 @@ export async function POST(request: NextRequest) {
     try {
       db.close();
     } catch (closeError) {
-      console.error('Database close error:', closeError);
+      logger.error('Database close error', closeError);
     }
     
     return NextResponse.json({
@@ -345,13 +346,13 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error: any) {
-    console.error('Error:', error);
+    logger.error('Manseryeok API error', error);
     
     if (db) {
       try {
         db.close();
       } catch (closeError) {
-        console.error('Database close error in catch:', closeError);
+        logger.error('Database close error in catch', closeError);
       }
     }
     
