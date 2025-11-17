@@ -68,7 +68,14 @@ const Navigation = () => {
               <li className="pb-2 mb-0">
                 <a 
                   href="#shop" 
-                  onClick={(e) => scrollToSection(e, 'shop')}
+                  onClick={(e) => {
+                    // Analytics: Shop 메뉴 클릭 추적
+                    if (typeof window !== 'undefined') {
+                      const { analytics } = require('../utils/analytics');
+                      analytics.trackShopClick();
+                    }
+                    scrollToSection(e, 'shop');
+                  }}
                   className="no-underline text-primary text-afacad-base font-afacad block text-center hover:opacity-70 transition-opacity"
                 >
                   Shop

@@ -18,7 +18,14 @@ const ShopSection = () => {
             Explore wellness products designed to restore the balance your energy needs.
             </p>
             <button
-              onClick={() => setShowPopup(true)}
+              onClick={() => {
+                // Analytics: Shop 버튼 클릭 추적
+                if (typeof window !== 'undefined') {
+                  const { analytics } = require('../utils/analytics');
+                  analytics.trackShopClick();
+                }
+                setShowPopup(true);
+              }}
               className="border border-primary text-primary px-6 py-3 rounded-design text-afacad-base font-afacad italic hover:bg-primary hover:text-white transition-all duration-300"
             >
               Visit Shop

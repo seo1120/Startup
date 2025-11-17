@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import OpenAI from 'openai';
+import { logger } from '../../utils/logger';
 
 function sanitizeInput(input: string, maxLength: number = 1000): string {
   if (typeof input !== 'string') return '';
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      console.error('OPENAI_API_KEY environment variable is not set');
+      logger.error('OPENAI_API_KEY environment variable is not set');
       return new Response(
         JSON.stringify({ error: 'AI service unavailable.' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
         .map(([k, v]) => `${k}:${v}`).join(', ')}.
     `.trim();
 
-    console.log('Chat request received:', { question });
+    logger.log('Chat request received');
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -158,7 +159,7 @@ ${sajuAnalysis || 'None'}
           controller.close();
 
         } catch (err) {
-          console.error('Streaming error:', err);
+          logger.error('Streaming error', err);
           sendChunk({ error: 'An error occurred. Try again soon.', done: true });
           controller.close();
         }
@@ -174,7 +175,7 @@ ${sajuAnalysis || 'None'}
     });
 
   } catch (error: any) {
-    console.error('Chat API error:', error);
+    logger.error('Chat API error', error);
     return new Response(
       JSON.stringify({ error: 'Unexpected server error.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }

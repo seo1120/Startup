@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { getSajuAnalysisPrompt } from '../../utils/sajuAnalysisPrompt';
+import { logger } from '../../utils/logger';
 
 // 계절별 인사 멘트 생성
 function getSeasonalGreeting(month: number) {
@@ -175,7 +176,7 @@ Missing Elements: ${sajuData.fiveElements.missing.length > 0 ? sajuData.fiveElem
     try {
       analysisData = JSON.parse(llmResponse || '{}');
     } catch (parseError) {
-      console.error('Failed to parse LLM JSON response:', parseError);
+      logger.error('Failed to parse LLM JSON response', parseError);
       // JSON 파싱 실패 시 기본 구조 반환
       analysisData = { 
         error: 'Failed to parse analysis response',
@@ -190,7 +191,7 @@ Missing Elements: ${sajuData.fiveElements.missing.length > 0 ? sajuData.fiveElem
     // JSON 데이터를 그대로 반환 (프론트엔드에서 카드 형식으로 표시)
     return JSON.stringify(analysisData);
   } catch (error: any) {
-    console.error('Saju analysis generation error:', error);
+    logger.error('Saju analysis generation error', error);
     throw error;
   }
 }
@@ -215,7 +216,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    console.log('Saju analysis request received');
+    logger.log('Saju analysis request received');
     
     try {
       const analysis = await generateSajuAnalysis(sajuData);
@@ -226,7 +227,7 @@ export async function POST(request: NextRequest) {
         analysisData: JSON.parse(analysis) // 파싱된 객체도 함께 제공
       });
     } catch (error: any) {
-      console.error('Analysis generation error:', error);
+      logger.error('Analysis generation error', error);
       return NextResponse.json(
         {
           error: 'I apologize, but I encountered an issue while generating your Saju analysis. Please try again in a moment.'
@@ -235,7 +236,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error('Analyze API error:', error);
+    logger.error('Analyze API error', error);
     return NextResponse.json(
       {
         error: 'I apologize, but I encountered an issue. Please try again in a moment.'

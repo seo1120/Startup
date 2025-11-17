@@ -72,13 +72,13 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
                 onAnalysisUpdate(currentAnalysis, analysisResult.analysisData);
               }
             }
-          } catch (e) {
-            console.error('Failed to parse analysis response:', e);
+            } catch (e) {
+              // 에러는 조용히 처리
+            }
           }
+        } catch (err) {
+          // 에러는 조용히 처리
         }
-      } catch (err) {
-        console.error('Failed to generate analysis:', err);
-      }
     }
 
     // 로딩 메시지 추가 (점 3개만 표시)
@@ -146,23 +146,23 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
                   });
                 }
               } catch (e) {
-                console.error('Error parsing SSE data:', e);
+                // SSE 파싱 에러는 조용히 처리
               }
             }
           }
         }
       }
-    } catch (error) {
-      setMessages(prev => {
-        const newMessages = prev.slice(0, -1);
-        newMessages.push({
-          type: 'bot',
-          content: 'I apologize, but I encountered a connection issue. Please try again in a moment.',
+      } catch (error) {
+        setMessages(prev => {
+          const newMessages = prev.slice(0, -1);
+          newMessages.push({
+            type: 'bot',
+            content: 'I apologize, but I encountered a connection issue. Please try again in a moment.',
+          });
+          return newMessages;
         });
-        return newMessages;
-      });
-      console.error('Chat error:', error);
-    } finally {
+        // 에러는 조용히 처리 (사용자에게는 이미 메시지 표시됨)
+      } finally {
       setIsLoading(false);
     }
   };
