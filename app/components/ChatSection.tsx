@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 interface ChatSectionProps {
   sajuData: any;
   sajuAnalysis: string | null;
-  onAnalysisUpdate: (analysis: string) => void;
+  onAnalysisUpdate: (analysis: string, analysisData?: any) => void;
 }
 
 interface Message {
@@ -62,7 +62,8 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
             if (analysisResult.success && analysisResult.analysis) {
               currentAnalysis = analysisResult.analysis;
               if (currentAnalysis) {
-                onAnalysisUpdate(currentAnalysis);
+                // analysisData도 함께 전달
+                onAnalysisUpdate(currentAnalysis, analysisResult.analysisData);
               }
             }
           } catch (e) {
@@ -74,8 +75,8 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
       }
     }
 
-    // 로딩 메시지 추가
-    const loadingMessage: Message = { type: 'bot', content: 'Generating response...' };
+    // 로딩 메시지 추가 (점 3개만 표시)
+    const loadingMessage: Message = { type: 'bot', content: '...' };
     setMessages(prev => [...prev, loadingMessage]);
 
     try {
@@ -191,7 +192,15 @@ const ChatSection = ({ sajuData, sajuAnalysis, onAnalysisUpdate }: ChatSectionPr
                     : 'bg-background text-primary'
                 }`}
               >
-                {message.content}
+                {message.content === '...' ? (
+                  <span className="searching-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                ) : (
+                  message.content
+                )}
               </div>
             </div>
           ))}

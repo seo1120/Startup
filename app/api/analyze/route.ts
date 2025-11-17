@@ -176,154 +176,19 @@ Missing Elements: ${sajuData.fiveElements.missing.length > 0 ? sajuData.fiveElem
       analysisData = JSON.parse(llmResponse || '{}');
     } catch (parseError) {
       console.error('Failed to parse LLM JSON response:', parseError);
-      // JSON 파싱 실패 시 기존 형식으로 폴백
-      analysisData = { longFormNarrative: llmResponse || 'Analysis generation failed.' };
+      // JSON 파싱 실패 시 기본 구조 반환
+      analysisData = { 
+        error: 'Failed to parse analysis response',
+        longFormNarrative: llmResponse || 'Analysis generation failed.' 
+      };
     }
     
-    // 최종 결과 조합 (JSON 데이터를 구조화된 형식으로 변환)
-    let finalAnalysis = greeting;
-    finalAnalysis += pillarSection;
+    // JSON 데이터에 기본 정보 추가
+    analysisData.greeting = greeting;
+    analysisData.pillarSection = pillarSection;
     
-    // JSON 데이터를 마크다운 형식으로 변환
-    if (analysisData.coreHook) {
-      finalAnalysis += `## ${analysisData.coreHook}\n\n`;
-    }
-    
-    if (analysisData.energySummary) {
-      finalAnalysis += `${analysisData.energySummary}\n\n`;
-    }
-    
-    // Keywords
-    if (analysisData.keywords && analysisData.keywords.length > 0) {
-      finalAnalysis += `### Keywords\n\n`;
-      finalAnalysis += analysisData.keywords.map((k: string) => `• ${k}`).join(' ') + `\n\n`;
-    }
-    
-    // Element Balance
-    if (analysisData.elementBalance) {
-      finalAnalysis += `### Element Balance\n\n`;
-      if (analysisData.elementBalance.wood) {
-        finalAnalysis += `**Wood (목)**: ${analysisData.elementBalance.wood}\n\n`;
-      }
-      if (analysisData.elementBalance.fire) {
-        finalAnalysis += `**Fire (화)**: ${analysisData.elementBalance.fire}\n\n`;
-      }
-      if (analysisData.elementBalance.earth) {
-        finalAnalysis += `**Earth (토)**: ${analysisData.elementBalance.earth}\n\n`;
-      }
-      if (analysisData.elementBalance.metal) {
-        finalAnalysis += `**Metal (금)**: ${analysisData.elementBalance.metal}\n\n`;
-      }
-      if (analysisData.elementBalance.water) {
-        finalAnalysis += `**Water (수)**: ${analysisData.elementBalance.water}\n\n`;
-      }
-      if (analysisData.elementBalance.overallBalance) {
-        finalAnalysis += `**Overall Balance**: ${analysisData.elementBalance.overallBalance}\n\n`;
-      }
-    }
-    
-    // Life Domains
-    if (analysisData.lifeDomains) {
-      finalAnalysis += `### Life Domains\n\n`;
-      if (analysisData.lifeDomains.foundation) {
-        finalAnalysis += `**Foundation (Year Pillar)**: ${analysisData.lifeDomains.foundation}\n\n`;
-      }
-      if (analysisData.lifeDomains.socialFlow) {
-        finalAnalysis += `**Social Flow (Month Pillar)**: ${analysisData.lifeDomains.socialFlow}\n\n`;
-      }
-      if (analysisData.lifeDomains.coreSelf) {
-        finalAnalysis += `**Core Self (Day Pillar)**: ${analysisData.lifeDomains.coreSelf}\n\n`;
-      }
-      if (analysisData.lifeDomains.innerWorld) {
-        finalAnalysis += `**Inner World (Hour Pillar)**: ${analysisData.lifeDomains.innerWorld}\n\n`;
-      }
-    }
-    
-    // Strengths
-    if (analysisData.strengths && analysisData.strengths.length > 0) {
-      finalAnalysis += `### Your Natural Strengths\n\n`;
-      analysisData.strengths.forEach((strength: string) => {
-        finalAnalysis += `• ${strength}\n`;
-      });
-      finalAnalysis += `\n`;
-    }
-    
-    // Growth Opportunities
-    if (analysisData.growthOpportunities && analysisData.growthOpportunities.length > 0) {
-      finalAnalysis += `### Growth Opportunities\n\n`;
-      analysisData.growthOpportunities.forEach((opportunity: string) => {
-        finalAnalysis += `• ${opportunity}\n`;
-      });
-      finalAnalysis += `\n`;
-    }
-    
-    // Flow Guidance
-    if (analysisData.flowGuidance) {
-      finalAnalysis += `### Flow Guidance\n\n`;
-      if (analysisData.flowGuidance.currentEnergy) {
-        finalAnalysis += `**Current Energy**: ${analysisData.flowGuidance.currentEnergy}\n\n`;
-      }
-      if (analysisData.flowGuidance.upcomingInfluence) {
-        finalAnalysis += `**Upcoming Influence**: ${analysisData.flowGuidance.upcomingInfluence}\n\n`;
-      }
-      if (analysisData.flowGuidance.supportiveActions && analysisData.flowGuidance.supportiveActions.length > 0) {
-        finalAnalysis += `**Supportive Actions**:\n`;
-        analysisData.flowGuidance.supportiveActions.forEach((action: string) => {
-          finalAnalysis += `• ${action}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-      if (analysisData.flowGuidance.thingsToBeCautiousOf && analysisData.flowGuidance.thingsToBeCautiousOf.length > 0) {
-        finalAnalysis += `**Things to Be Cautious Of**:\n`;
-        analysisData.flowGuidance.thingsToBeCautiousOf.forEach((caution: string) => {
-          finalAnalysis += `• ${caution}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-    }
-    
-    // Wellness Recommendations
-    if (analysisData.wellnessRecommendations) {
-      finalAnalysis += `### Wellness Recommendations\n\n`;
-      if (analysisData.wellnessRecommendations.mind && analysisData.wellnessRecommendations.mind.length > 0) {
-        finalAnalysis += `**Mind**:\n`;
-        analysisData.wellnessRecommendations.mind.forEach((rec: string) => {
-          finalAnalysis += `• ${rec}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-      if (analysisData.wellnessRecommendations.body && analysisData.wellnessRecommendations.body.length > 0) {
-        finalAnalysis += `**Body**:\n`;
-        analysisData.wellnessRecommendations.body.forEach((rec: string) => {
-          finalAnalysis += `• ${rec}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-      if (analysisData.wellnessRecommendations.routine && analysisData.wellnessRecommendations.routine.length > 0) {
-        finalAnalysis += `**Routine**:\n`;
-        analysisData.wellnessRecommendations.routine.forEach((rec: string) => {
-          finalAnalysis += `• ${rec}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-      if (analysisData.wellnessRecommendations.relationships && analysisData.wellnessRecommendations.relationships.length > 0) {
-        finalAnalysis += `**Relationships**:\n`;
-        analysisData.wellnessRecommendations.relationships.forEach((rec: string) => {
-          finalAnalysis += `• ${rec}\n`;
-        });
-        finalAnalysis += `\n`;
-      }
-    }
-    
-    // Long Form Narrative
-    if (analysisData.longFormNarrative) {
-      finalAnalysis += `## Deep Insight\n\n${analysisData.longFormNarrative}\n\n`;
-    }
-    
-    finalAnalysis += `\n\n---\n\n`;
-    finalAnalysis += `If you have more detailed questions or want to explore specific aspects of your Saju, please feel free to ask in the chat below. I'm here to help you understand yourself better. 💚`;
-    
-    return finalAnalysis;
+    // JSON 데이터를 그대로 반환 (프론트엔드에서 카드 형식으로 표시)
+    return JSON.stringify(analysisData);
   } catch (error: any) {
     console.error('Saju analysis generation error:', error);
     throw error;
@@ -357,7 +222,8 @@ export async function POST(request: NextRequest) {
       
       return NextResponse.json({
         success: true,
-        analysis: analysis
+        analysis: analysis, // JSON 문자열
+        analysisData: JSON.parse(analysis) // 파싱된 객체도 함께 제공
       });
     } catch (error: any) {
       console.error('Analysis generation error:', error);
