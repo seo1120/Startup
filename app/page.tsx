@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 export default function Home() {
   const [sajuData, setSajuData] = useState<any>(null);
   const [sajuAnalysis, setSajuAnalysis] = useState<string | null>(null);
+  const [sajuAnalysisData, setSajuAnalysisData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,6 +62,9 @@ export default function Home() {
               const analysisResult = await analysisResponse.json();
               if (analysisResult.success) {
                 setSajuAnalysis(analysisResult.analysis);
+                if (analysisResult.analysisData) {
+                  setSajuAnalysisData(analysisResult.analysisData);
+                }
               }
             } catch (e) {
               console.error('Failed to parse analysis response:', e);
@@ -113,7 +117,13 @@ export default function Home() {
               <ResultsSection 
                 sajuData={sajuData} 
                 sajuAnalysis={sajuAnalysis}
-                onAnalysisUpdate={setSajuAnalysis}
+                sajuAnalysisData={sajuAnalysisData}
+                onAnalysisUpdate={(analysis: string, analysisData?: any) => {
+                  setSajuAnalysis(analysis);
+                  if (analysisData) {
+                    setSajuAnalysisData(analysisData);
+                  }
+                }}
               />
             )}
           </div>
